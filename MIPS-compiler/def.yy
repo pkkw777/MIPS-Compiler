@@ -116,21 +116,21 @@ wyswietlanie :
 					PRINTI  '('ID')' 					{print_int($3);}
 					|					
 					PRINTI '('ID tab_wyr')'
-														{
-															code.push_back("\n#PRINT TAB INT");
-															string test = $3;
-															print_tabi(test);
-															print_int($3);
-														;}
+					{
+						code.push_back("\n#PRINT TAB INT");
+						string test = $3;
+						print_tabi(test);
+						print_int($3);
+						;}
 														
 					|
 					PRINTF '('ID tab_wyr')'
-														{
-															code.push_back("\n#PRINT TAB FLOAT");
-															string test = $3;
-															print_tabf(test);
-															print_float($3);
-														;}
+					{
+						code.push_back("\n#PRINT TAB FLOAT");
+						string test = $3;
+						print_tabf(test);
+						print_float($3);
+					;}
 															
 					|
 					PRINTF '('ID')' 			{print_float($3);}
@@ -145,79 +145,79 @@ pobranie	:
 					;
 					
 deklaracja : INT ID
-														{		
-																if(symbols.find($2) != symbols.end())
-																{
-																	cout << "ERROR. This symbol: "<< $2 << "\nExists  \n" ;
-																	exit(-1);
-																}
-																insert_symbol(INT_TYPE, $2, 1, "0");
-														}
+					{		
+							if(symbols.find($2) != symbols.end())
+							{
+								cout << "ERROR. This symbol: "<< $2 << "\nExists  \n" ;
+								exit(-1);
+							}
+							insert_symbol(INT_TYPE, $2, 1, "0");
+					}
 					| FLOAT ID
-														{
-																if(symbols.find($2) != symbols.end())
-																{
-																	cout << "ERROR. This symbol: "<< $2 << "\nExists  \n" ;
-																	exit(-1);
-																}
-																insert_symbol(FLOAT_TYPE, $2, 1, "0.0");
-														}
+					{
+							if(symbols.find($2) != symbols.end())
+							{
+								cout << "ERROR. This symbol: "<< $2 << "\nExists  \n" ;
+								exit(-1);
+							}
+							insert_symbol(FLOAT_TYPE, $2, 1, "0.0");
+					}
 					| INT ID '[' LC ']' 
-														{
-																insert_symbol(INT_ARRAY, $2, $4, "0:" + to_string($4));
-														}
+					{
+							insert_symbol(INT_ARRAY, $2, $4, "0:" + to_string($4));
+					}
 					| FLOAT ID '[' LC ']'
-														{
-																insert_symbol(FLOAT_ARRAY, $2, $4, "0:" + to_string($4));
-														}
+					{
+							insert_symbol(FLOAT_ARRAY, $2, $4, "0:" + to_string($4));
+					}
 					;
 					
 warunek_while : warunek_while_start '(' warunek ')' '{' linialinia '}'
-														{
-															stringstream s;
-															string label1 = labels.top();
-															labels.pop();
-															string label2 = labels.top();
-															labels.pop();
-															s << "j" << " " << label2 + "\n";
-															code.push_back(s.str());
-															code.push_back(label1 + ": ");
-														}
+					{
+						stringstream s;
+						string label1 = labels.top();
+						labels.pop();
+						string label2 = labels.top();
+						labels.pop();
+						s << "j" << " " << label2 + "\n";
+						code.push_back(s.str());
+						code.push_back(label1 + ": ");
+					}
 					;
 
 warunek_while_start : WHILE 
-														{ 
-															string label = "WHILE_LABEL" + to_string(while_counter);
-															while_counter++;
-															labels.push(label);
-															code.push_back(label + ": ");
-														}
+					{ 
+						string label = "WHILE_LABEL" + to_string(while_counter);
+						while_counter++;
+						labels.push(label);
+						code.push_back(label + ": ");
+					}
 					;
 								
 warunek_if	:	IF '(' warunek ') '  '{' linialinia '}'
-														{
-															gen_if_code();
-														}
+					{
+						gen_if_code();
+					}
 					|	IF '(' warunek ') '  '{' linialinia '}' warunek_else '{ ' linialinia '}'
-														{
-															gen_if_code();
-														}
+					{
+						gen_if_code();
+					}
 					;
 
 warunek_else		:	ELSE
-														{
-															string label = labels.top();
-															string newlabel = "LABEL" + to_string(label_counter);
-															code.push_back("b " + newlabel);
-															code.push_back(label + ":");
-															labels.pop();
-															label = "LABEL" + to_string(label_counter);
-															labels.push(label);
-															label_counter++;
-														}
+					{
+						string label = labels.top();
+						string newlabel = "LABEL" + to_string(label_counter);
+						code.push_back("b " + newlabel);
+						code.push_back(label + ":");
+						labels.pop();
+						label = "LABEL" + to_string(label_counter);
+						labels.push(label);
+						label_counter++;
+					}
 					;
 
-warunek		:	wyr EQ wyr 								{check_predicate("bne");}
+warunek		:	wyr EQ wyr 									{check_predicate("bne");}
 					|	wyr NE wyr 						{check_predicate("beq");}
 					|	wyr LT wyr 						{check_predicate("bge");}
 					|	wyr GT wyr 						{check_predicate("ble");}
@@ -226,57 +226,58 @@ warunek		:	wyr EQ wyr 								{check_predicate("bne");}
 					;
 					
 przypisanie	: ID '=' wyr
-														{
-															rpn << " = " << $1; 
-															Element e(ID, $1);
-															argstack.push(e);
-															make_op('=', "sw");
-														}
-					|	ID '[' wyr ']' '=' wyr {
-															auto symbol = symbols.find($1);
-															string test = $1;
-															code.push_back("#TABLICA " + test);
-															code.push_back("la $t4, " + test);
-															
-															Element e1 = argstack.top();
-															argstack.pop();
-															Element e2 = argstack.top();
-															argstack.pop();				
-															
-															code.push_back(get_load_line(e1, 0));
-															code.push_back(get_load_line(e2, 5));
-															
-															if(symbol->second->type == INT_ARRAY)
-															{
-																code.push_back("mul $t5, $t5, 4");
-																code.push_back("add $t4, $t4, $t5");
-																code.push_back("sw $t0, ($t4)");
-															}
-															else
-															{
-																code.push_back("mul $t5, $t5, 4");
-																code.push_back("add $t4, $t4, $t5");
-																code.push_back("s.s $f0, ($t4)");
-															}
-														;}
+					{
+						rpn << " = " << $1; 
+						Element e(ID, $1);
+						argstack.push(e);
+						make_op('=', "sw");
+					}
+					|	ID '[' wyr ']' '=' wyr
+					{
+						auto symbol = symbols.find($1);
+						string test = $1;
+						code.push_back("#TABLICA " + test);
+						code.push_back("la $t4, " + test);
+
+						Element e1 = argstack.top();
+						argstack.pop();
+						Element e2 = argstack.top();
+						argstack.pop();				
+
+						code.push_back(get_load_line(e1, 0));
+						code.push_back(get_load_line(e2, 5));
+
+						if(symbol->second->type == INT_ARRAY)
+						{
+							code.push_back("mul $t5, $t5, 4");
+							code.push_back("add $t4, $t4, $t5");
+							code.push_back("sw $t0, ($t4)");
+						}
+						else
+						{
+							code.push_back("mul $t5, $t5, 4");
+							code.push_back("add $t4, $t4, $t5");
+							code.push_back("s.s $f0, ($t4)");
+						}
+					;}
 					; 		
 
 wyr
-	:wyr '+' skladnik 	   								{rpn << " + "; make_op('+', "add");}
-	|wyr '-' skladnik	   								{rpn << " - "; make_op('-', "sub");}
-	|skladnik		      								{rpn << " ";}
+	:wyr '+' skladnik 	   							{rpn << " + "; make_op('+', "add");}
+	|wyr '-' skladnik	   							{rpn << " - "; make_op('-', "sub");}
+	|skladnik		      							{rpn << " ";}
 	;
 skladnik
 	:skladnik '*' czynnik								{rpn << " * "; make_op('*', "mul");}
 	|skladnik '/' czynnik								{rpn << " / "; make_op('/', "div");}
-	|czynnik		        							{rpn << " ";}
+	|czynnik		        						{rpn << " ";}
 	;
 czynnik
-	:ID			             							{
-															rpn <<  $1; 
-															Element e(ID, $1);
-															argstack.push(e);
-														}
+	:ID			             						{
+												rpn <<  $1; 
+												Element e(ID, $1);
+												argstack.push(e);
+											}
 	|
 	ID tab_wyr	{
 
@@ -322,19 +323,19 @@ czynnik
 						;}
 	|
 	|LC			             
-														{
-															rpn << $1;
-															Element e(LC, to_string($1));
-															argstack.push(e);
-														}
-	|LZ												{
-															make_tmp_float($1);
-														}
+							{
+								rpn << $1;
+								Element e(LC, to_string($1));
+								argstack.push(e);
+							}
+	|LZ						{
+								make_tmp_float($1);
+							}
 	|STRING										{;}
 	|'(' wyr ')'		      						   	{;}
 	;
 tab_wyr
-	:'[' wyr ']'										{}
+	:'[' wyr ']'									{}
 	;
 %%
 

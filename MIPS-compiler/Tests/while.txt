@@ -1,0 +1,17 @@
+int i;
+int x;
+i = 0;
+x = 4;
+while(i < 10)
+{
+	prints("\nLoop 1\n");
+	printi(i);
+	i = i + 1;
+	while(x < 10)
+	{
+		prints("\nLoop 2\n");
+		x = x + 3;
+		printi(x);
+	}
+}
+

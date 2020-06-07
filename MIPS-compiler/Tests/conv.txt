@@ -1,0 +1,21 @@
+int z;
+int a;
+float x;
+float y;
+
+a = 0;
+y = 14.321;
+
+a = y;
+y = a;
+
+z = 0;
+x = 0;
+
+z = 5 + 1.432 * a + y / 15;
+printi(z);
+prints("\n");
+
+x = z * 6.431 - a / y;
+printf(x);
+prints("\n");

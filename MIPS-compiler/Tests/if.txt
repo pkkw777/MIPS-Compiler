@@ -1,0 +1,28 @@
+int x;
+int score;
+int a;
+a = 12;
+x = 11;
+score = 0;
+if(x > 5)
+{
+	if(a < 10)
+	{
+		if( x > a)
+		{
+			score = 1;
+		}
+	}
+	else
+	{
+		if(3 <= a)
+		{
+			score = 2;
+		}
+		else
+		{
+			score = 3;
+		}
+	}
+}
+printi(score);

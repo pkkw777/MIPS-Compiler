@@ -1,0 +1,12 @@
+int x;
+float y;
+
+prints("\nEnter integer x:\n");
+x = readi;
+prints("\nEnter float y:\n");
+y = readf;
+
+prints("\nYour numbers:\n");
+printi(x);
+prints("\n");
+printf(y);

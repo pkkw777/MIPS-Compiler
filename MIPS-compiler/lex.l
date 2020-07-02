@@ -31,22 +31,22 @@ int yyerror(const char *msg,...);
 \|\|                    							{ return OR;}
 int                     							{ return INT;}
 float                 								{ return FLOAT;}
-if                   							    { return IF;}
+if                   							    	{ return IF;}
 else                  								{ return ELSE;}
-while												{ return WHILE;}
+while										{ return WHILE;}
 printi              								{ return PRINTI;}
-printf             									{ return PRINTF;}
-prints												{ return PRINTS;}
-readi												{ return READI;}
-readf												{ return READF;}							
-0|[1-9][0-9]*      									{ yylval.ival	= atoi(yytext); 		return LC;}
-[0-9]*[.][0-9]*										{ yylval.fval	= atof(yytext);  		return LZ;}
+printf             								{ return PRINTF;}
+prints										{ return PRINTS;}
+readi										{ return READI;}
+readf										{ return READF;}							
+0|[1-9][0-9]*      								{ yylval.ival	= atoi(yytext); 		return LC;}
+[0-9]*[.][0-9]*									{ yylval.fval	= atof(yytext);  		return LZ;}
 [A-Za-z_][A-Za-z0-9_]*  							{ yylval.text = strdup(yytext);		return ID;}
-\"[^\"]*\" 											{ yylval.text = strdup(yytext); 
+\"[^\"]*\" 									{ yylval.text = strdup(yytext); 
 																										return STRING;}
-\ |\t          										{;}
-\n         											{yylineno++ ;}
-.           										{yyerror("Blad leksykalny\n");}
+\ |\t          									{;}
+\n         									{yylineno++ ;}
+.           									{yyerror("Blad leksykalny\n");}
 %%
 int yyerror(const char *msg,...)
 {

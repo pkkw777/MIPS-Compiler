@@ -1,1 +1,1 @@
-# MIPS-compiler
+# MIPS compiler

@@ -1,3 +1,3 @@
 # MIPS compiler
 
-W pliku lex.l znajduje się składnia oraz funkcje pozwalające na przeprowadzenie operacji matematycznych oraz wyświetlenia wyników na ekran konsoli w raz z opisem tekstowym.
+The lex.l file contains the syntax and functions that allow you to perform mathematical operations and display the results on the console screen together with a text description.
